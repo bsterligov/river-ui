@@ -61,9 +61,11 @@ Class | Method | HTTP request | Description
 *DefaultApi* | [**getLogs**](doc//DefaultApi.md#getlogs) | **GET** /v1/logs | 
 *DefaultApi* | [**getLogsFacets**](doc//DefaultApi.md#getlogsfacets) | **GET** /v1/logs/facets | 
 *DefaultApi* | [**getLogsHistogram**](doc//DefaultApi.md#getlogshistogram) | **GET** /v1/logs/histogram | 
+*DefaultApi* | [**getMetricNames**](doc//DefaultApi.md#getmetricnames) | **GET** /v1/metrics/names | 
 *DefaultApi* | [**getMetrics**](doc//DefaultApi.md#getmetrics) | **GET** /v1/metrics | 
 *DefaultApi* | [**getTrace**](doc//DefaultApi.md#gettrace) | **GET** /v1/traces/{trace_id} | 
 *DefaultApi* | [**getTraces**](doc//DefaultApi.md#gettraces) | **GET** /v1/traces | 
+*DefaultApi* | [**getTracesFacets**](doc//DefaultApi.md#gettracesfacets) | **GET** /v1/traces/facets | 
 
 
 ## Documentation For Models

@@ -3,6 +3,7 @@ import 'package:river_api/api.dart';
 
 import '../../controllers/time_range_controller.dart';
 import '../../theme/app_theme.dart';
+import '../../widgets/facet_page_layout.dart';
 import '../../widgets/river_search_bar.dart';
 import 'trace_detail_panel.dart';
 import 'traces_controller.dart';
@@ -25,6 +26,7 @@ class TracesPage extends StatefulWidget {
 class _TracesPageState extends State<TracesPage> {
   late final TracesController _controller;
   final _searchController = TextEditingController();
+  final _layoutKey = GlobalKey<FacetPageLayoutState>();
 
   @override
   void initState() {
@@ -43,40 +45,30 @@ class _TracesPageState extends State<TracesPage> {
     super.dispose();
   }
 
-  void _onSubmit(String value) {
-    _controller.setFilter(value);
-    _controller.reload();
-  }
-
   @override
   Widget build(BuildContext context) {
-    return ListenableBuilder(
-      listenable: _controller,
-      builder: (context, _) => Column(
-        crossAxisAlignment: CrossAxisAlignment.stretch,
+    return FacetPageLayout(
+      key: _layoutKey,
+      controller: _controller,
+      searchController: _searchController,
+      filterBarBuilder: (ctx) => FilterBar(
+        fieldKey: const Key('traces_search'),
+        controller: _searchController,
+        onSubmit: (v) => _layoutKey.currentState?.onSubmit(v),
+        hintText: 'Filter (e.g. service:myapp AND operation:GET)',
+        errorText: _controller.error,
+      ),
+      aboveFacetsBuilder: (ctx) => const [SizedBox(height: AppLayout.gapL)],
+      contentBuilder: (ctx) => Stack(
         children: [
-          FilterBar(
-            fieldKey: const Key('traces_search'),
-            controller: _searchController,
-            onSubmit: _onSubmit,
-            hintText: 'Filter (e.g. service:myapp AND operation:GET)',
-            errorText: _controller.error,
-          ),
-          const SizedBox(height: AppLayout.gapL),
-          Expanded(
-            child: Stack(
-              children: [
-                _controller.loading
-                    ? const Center(child: CircularProgressIndicator())
-                    : TracesTable(controller: _controller),
-                Positioned(
-                  top: 0,
-                  right: 0,
-                  bottom: 0,
-                  child: TraceDetailPanel(controller: _controller),
-                ),
-              ],
-            ),
+          _controller.loading
+              ? const Center(child: CircularProgressIndicator())
+              : TracesTable(controller: _controller),
+          Positioned(
+            top: 0,
+            right: 0,
+            bottom: 0,
+            child: TraceDetailPanel(controller: _controller),
           ),
         ],
       ),

@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:river_api/api.dart';
 
 import '../theme/app_theme.dart';
-import '../pages/logs/logs_controller.dart';
+import 'facet_data_source.dart';
 
 class FacetPanel extends StatefulWidget {
   const FacetPanel({
@@ -14,7 +14,7 @@ class FacetPanel extends StatefulWidget {
     required this.onToggle,
   });
 
-  final LogsController controller;
+  final FacetDataSource controller;
   final TextEditingController searchController;
   final String manualFilter;
   final bool expanded;
@@ -90,7 +90,7 @@ class _FacetPanelState extends State<FacetPanel> {
   Future<void> _fetch() async {
     setState(() => _loading = true);
     try {
-      final results = await widget.controller.apiClient.getLogsFacets(
+      final results = await widget.controller.fetchFacets(
         filter: widget.manualFilter.isEmpty ? null : widget.manualFilter,
         from: widget.controller.from.toIso8601String(),
         to: widget.controller.to.toIso8601String(),

@@ -4,6 +4,7 @@ import 'package:river_api/api.dart';
 import '../../controllers/time_range_controller.dart';
 import '../../utils/api_error.dart';
 import '../../utils/format_time.dart';
+import '../../widgets/facet_data_source.dart';
 import '../shared/column_def.dart';
 import '../shared/table_sort_state.dart';
 
@@ -84,11 +85,12 @@ List<TraceColumn> defaultTraceColumns() => [
       ),
     ];
 
-class TracesController extends ChangeNotifier {
+class TracesController extends ChangeNotifier implements FacetDataSource {
   TracesController({required this.apiClient, required this.rangeController}) {
     rangeController.addListener(_onRangeChanged);
   }
 
+  @override
   final DefaultApi apiClient;
   final TimeRangeController rangeController;
 
@@ -97,11 +99,17 @@ class TracesController extends ChangeNotifier {
   bool _loading = false;
   String? _error;
   String? _selectedTraceId;
+  int _rangeVersion = 0;
   final _sort = TableSortState<TraceColumn>(defaultTraceColumns());
 
+  @override
   String get filter => _filter;
+  @override
   DateTime get from => rangeController.from;
+  @override
   DateTime get to => rangeController.to;
+  @override
+  int get rangeVersion => _rangeVersion;
   List<TraceGroup> get rows => _sort.sortedRows(_rows).cast<TraceGroup>();
   bool get loading => _loading;
   String? get error => _error;
@@ -111,10 +119,12 @@ class TracesController extends ChangeNotifier {
   List<TraceColumn> get columns => _sort.columns;
 
   void _onRangeChanged() {
+    _rangeVersion++;
     notifyListeners();
     reload();
   }
 
+  @override
   void setFilter(String value) {
     _filter = value;
     _selectedTraceId = null;
@@ -140,11 +150,20 @@ class TracesController extends ChangeNotifier {
   }
 
   @override
+  Future<List<FacetField>?> fetchFacets({
+    String? filter,
+    String? from,
+    String? to,
+  }) =>
+      apiClient.getTracesFacets(filter: filter, from: from, to: to);
+
+  @override
   void dispose() {
     rangeController.removeListener(_onRangeChanged);
     super.dispose();
   }
 
+  @override
   Future<void> reload() async {
     _loading = true;
     _error = null;

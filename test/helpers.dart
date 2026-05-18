@@ -39,6 +39,12 @@ class FakeApi extends DefaultApi {
   }
 
   @override
+  Future<List<FacetField>?> getTracesFacets({String? filter, String? from, String? to}) async {
+    if (facetError != null) throw facetError!;
+    return facets;
+  }
+
+  @override
   Future<List<HistogramBucket>?> getLogsHistogram({
     String? filter,
     String? from,
@@ -63,6 +69,9 @@ class HoldingFacetApi extends DefaultApi {
     _resolve = (f) => completer.complete(f);
     return completer.future;
   }
+
+  @override
+  Future<List<FacetField>?> getTracesFacets({String? filter, String? from, String? to}) async => [];
 
   @override
   Future<List<HistogramBucket>?> getLogsHistogram({
@@ -91,6 +100,13 @@ class CountingFacetApi extends DefaultApi {
   }
 
   @override
+  Future<List<FacetField>?> getTracesFacets({String? filter, String? from, String? to}) async {
+    facetFetchCount++;
+    onFetch();
+    return facets;
+  }
+
+  @override
   Future<List<HistogramBucket>?> getLogsHistogram({
     String? filter,
     String? from,
@@ -109,6 +125,9 @@ class HoldingHistogramApi extends DefaultApi {
 
   @override
   Future<List<FacetField>?> getLogsFacets({String? filter, String? from, String? to}) async => [];
+
+  @override
+  Future<List<FacetField>?> getTracesFacets({String? filter, String? from, String? to}) async => [];
 
   @override
   Future<List<HistogramBucket>?> getLogsHistogram({

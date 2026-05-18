@@ -289,6 +289,50 @@ class DefaultApi {
     return null;
   }
 
+  /// Performs an HTTP 'GET /v1/metrics/names' operation and returns the [Response].
+  Future<Response> getMetricNamesWithHttpInfo() async {
+    // ignore: prefer_const_declarations
+    final path = r'/v1/metrics/names';
+
+    // ignore: prefer_final_locals
+    Object? postBody;
+
+    final queryParams = <QueryParam>[];
+    final headerParams = <String, String>{};
+    final formParams = <String, String>{};
+
+    const contentTypes = <String>[];
+
+
+    return apiClient.invokeAPI(
+      path,
+      'GET',
+      queryParams,
+      postBody,
+      headerParams,
+      formParams,
+      contentTypes.isEmpty ? null : contentTypes.first,
+    );
+  }
+
+  Future<List<String>?> getMetricNames() async {
+    final response = await getMetricNamesWithHttpInfo();
+    if (response.statusCode >= HttpStatus.badRequest) {
+      throw ApiException(response.statusCode, await _decodeBodyBytes(response));
+    }
+    // When a remote server returns no body with a status of 204, we shall not decode it.
+    // At the time of writing this, `dart:convert` will throw an "Unexpected end of input"
+    // FormatException when trying to decode an empty string.
+    if (response.body.isNotEmpty && response.statusCode != HttpStatus.noContent) {
+      final responseBody = await _decodeBodyBytes(response);
+      return (await apiClient.deserializeAsync(responseBody, 'List<String>') as List)
+        .cast<String>()
+        .toList(growable: false);
+
+    }
+    return null;
+  }
+
   /// Performs an HTTP 'GET /v1/metrics' operation and returns the [Response].
   /// Parameters:
   ///
@@ -368,39 +412,6 @@ class DefaultApi {
         .cast<MetricPoint>()
         .toList(growable: false);
 
-    }
-    return null;
-  }
-
-  /// Performs an HTTP 'GET /v1/metrics/names' operation and returns the [Response].
-  Future<Response> getMetricNamesWithHttpInfo() async {
-    const path = r'/v1/metrics/names';
-    final queryParams = <QueryParam>[];
-    final headerParams = <String, String>{};
-    final formParams = <String, String>{};
-    final contentTypes = <String>[];
-    return apiClient.invokeAPI(
-      path,
-      'GET',
-      queryParams,
-      null,
-      headerParams,
-      formParams,
-      contentTypes.isEmpty ? null : contentTypes.first,
-    );
-  }
-
-  /// Returns a list of all metric names.
-  Future<List<String>?> getMetricNames() async {
-    final response = await getMetricNamesWithHttpInfo();
-    if (response.statusCode >= HttpStatus.badRequest) {
-      throw ApiException(response.statusCode, await _decodeBodyBytes(response));
-    }
-    if (response.body.isNotEmpty && response.statusCode != HttpStatus.noContent) {
-      final responseBody = await _decodeBodyBytes(response);
-      return (await apiClient.deserializeAsync(responseBody, 'List<String>') as List)
-        .cast<String>()
-        .toList(growable: false);
     }
     return null;
   }
@@ -535,6 +546,80 @@ class DefaultApi {
       final responseBody = await _decodeBodyBytes(response);
       return (await apiClient.deserializeAsync(responseBody, 'List<TraceGroup>') as List)
         .cast<TraceGroup>()
+        .toList(growable: false);
+
+    }
+    return null;
+  }
+
+  /// Performs an HTTP 'GET /v1/traces/facets' operation and returns the [Response].
+  /// Parameters:
+  ///
+  /// * [String] filter:
+  ///   Filter expression
+  ///
+  /// * [String] from:
+  ///   Start time (RFC 3339)
+  ///
+  /// * [String] to:
+  ///   End time (RFC 3339)
+  Future<Response> getTracesFacetsWithHttpInfo({ String? filter, String? from, String? to, }) async {
+    // ignore: prefer_const_declarations
+    final path = r'/v1/traces/facets';
+
+    // ignore: prefer_final_locals
+    Object? postBody;
+
+    final queryParams = <QueryParam>[];
+    final headerParams = <String, String>{};
+    final formParams = <String, String>{};
+
+    if (filter != null) {
+      queryParams.addAll(_queryParams('', 'filter', filter));
+    }
+    if (from != null) {
+      queryParams.addAll(_queryParams('', 'from', from));
+    }
+    if (to != null) {
+      queryParams.addAll(_queryParams('', 'to', to));
+    }
+
+    const contentTypes = <String>[];
+
+
+    return apiClient.invokeAPI(
+      path,
+      'GET',
+      queryParams,
+      postBody,
+      headerParams,
+      formParams,
+      contentTypes.isEmpty ? null : contentTypes.first,
+    );
+  }
+
+  /// Parameters:
+  ///
+  /// * [String] filter:
+  ///   Filter expression
+  ///
+  /// * [String] from:
+  ///   Start time (RFC 3339)
+  ///
+  /// * [String] to:
+  ///   End time (RFC 3339)
+  Future<List<FacetField>?> getTracesFacets({ String? filter, String? from, String? to, }) async {
+    final response = await getTracesFacetsWithHttpInfo( filter: filter, from: from, to: to, );
+    if (response.statusCode >= HttpStatus.badRequest) {
+      throw ApiException(response.statusCode, await _decodeBodyBytes(response));
+    }
+    // When a remote server returns no body with a status of 204, we shall not decode it.
+    // At the time of writing this, `dart:convert` will throw an "Unexpected end of input"
+    // FormatException when trying to decode an empty string.
+    if (response.body.isNotEmpty && response.statusCode != HttpStatus.noContent) {
+      final responseBody = await _decodeBodyBytes(response);
+      return (await apiClient.deserializeAsync(responseBody, 'List<FacetField>') as List)
+        .cast<FacetField>()
         .toList(growable: false);
 
     }

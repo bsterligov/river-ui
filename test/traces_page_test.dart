@@ -43,6 +43,11 @@ class FakeTracesApi extends DefaultApi {
       [];
 
   @override
+  Future<List<FacetField>?> getTracesFacets(
+      {String? filter, String? from, String? to}) async =>
+      [];
+
+  @override
   Future<List<HistogramBucket>?> getLogsHistogram({
     String? filter,
     String? from,

@@ -4,6 +4,7 @@ import 'package:river_api/api.dart';
 import '../../controllers/time_range_controller.dart';
 import '../../utils/api_error.dart';
 import '../../utils/format_time.dart';
+import '../../widgets/facet_data_source.dart';
 import '../shared/column_def.dart';
 import '../shared/table_sort_state.dart';
 
@@ -88,11 +89,12 @@ List<LogColumn> defaultColumns() => [
       ),
     ];
 
-class LogsController extends ChangeNotifier {
+class LogsController extends ChangeNotifier implements FacetDataSource {
   LogsController({required this.apiClient, required this.rangeController}) {
     rangeController.addListener(_onRangeChanged);
   }
 
+  @override
   final DefaultApi apiClient;
   final TimeRangeController rangeController;
 
@@ -107,14 +109,18 @@ class LogsController extends ChangeNotifier {
   int _rangeVersion = 0;
   final _sort = TableSortState<LogColumn>(defaultColumns());
 
+  @override
   String get filter => _filter;
+  @override
   DateTime get from => rangeController.from;
+  @override
   DateTime get to => rangeController.to;
   List<LogRow> get rows => _sort.sortedRows(_rawRows);
   List<HistogramBucket> get histogram => _histogram;
   bool get loading => _loading;
   String? get error => _error;
   LogRow? get selectedRow => _selectedRow;
+  @override
   int get rangeVersion => _rangeVersion;
   List<LogColumn> get columns => _sort.columns;
   String? get sortColumnId => _sort.sortColumnId;
@@ -135,6 +141,7 @@ class LogsController extends ChangeNotifier {
     _selectedRow = null;
     notifyListeners();
   }
+  @override
   void setFilter(String value) {
     _filter = value;
     _selectedRow = null;
@@ -156,11 +163,20 @@ class LogsController extends ChangeNotifier {
   }
 
   @override
+  Future<List<FacetField>?> fetchFacets({
+    String? filter,
+    String? from,
+    String? to,
+  }) =>
+      apiClient.getLogsFacets(filter: filter, from: from, to: to);
+
+  @override
   void dispose() {
     rangeController.removeListener(_onRangeChanged);
     super.dispose();
   }
 
+  @override
   Future<void> reload() async {
     _loading = true;
     _error = null;
