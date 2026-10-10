@@ -1,5 +1,4 @@
 #!/usr/bin/env bash
 #MISE description="Run Flutter widget tests"
 
-cd src/ui
 flutter test

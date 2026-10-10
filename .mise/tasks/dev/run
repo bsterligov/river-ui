@@ -1,0 +1,4 @@
+#!/usr/bin/env bash
+#MISE description="Run the River dashboard on macOS"
+
+flutter run -d macos

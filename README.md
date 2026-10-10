@@ -1,17 +1,13 @@
-# ui
+# river-ui
 
-A new Flutter project.
+macOS Flutter dashboard for River: logs, traces and metrics pages over `river-query-api`.
 
-## Getting Started
+```bash
+mise run dev:setup        # point xcode-select at Xcode (once)
+mise run dev:run          # run on macOS
+mise run dev:api-client   # regenerate lib/api/generated from openapi.json
+mise run ci:flutter-test
+```
 
-This project is a starting point for a Flutter application.
-
-A few resources to get you started if this is your first Flutter project:
-
-- [Learn Flutter](https://docs.flutter.dev/get-started/learn-flutter)
-- [Write your first Flutter app](https://docs.flutter.dev/get-started/codelab)
-- [Flutter learning resources](https://docs.flutter.dev/reference/learning-resources)
-
-For help getting started with Flutter development, view the
-[online documentation](https://docs.flutter.dev/), which offers tutorials,
-samples, guidance on mobile development, and a full API reference.
+`openapi.json` is the contract published by [river-query](https://github.com/bsterligov/river-query).
+Specs and agent context live in [river-spec](https://github.com/bsterligov/river-spec).

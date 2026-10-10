@@ -1,0 +1,11 @@
+#!/usr/bin/env bash
+#MISE description="Regenerate the Dart API client from openapi.json (contract published by river-query)"
+set -euo pipefail
+SPEC="${OPENAPI_SPEC:-openapi.json}"
+openapi-generator generate \
+  -i "$SPEC" \
+  -g dart \
+  -o lib/api/generated \
+  --package-name river_api \
+  --additional-properties=pubName=river_api,pubVersion=0.1.0 \
+  --skip-validate-spec

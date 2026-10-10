@@ -1,5 +1,4 @@
 #!/usr/bin/env bash
 #MISE description="Run Flutter tests with coverage and output lcov.info"
 
-cd src/ui
 flutter test --coverage --coverage-path coverage/lcov.info

@@ -1,5 +1,4 @@
 #!/usr/bin/env bash
 #MISE description="Analyze Flutter/Dart code"
 
-cd src/ui
 flutter analyze

@@ -1,0 +1,3 @@
+[tools]
+flutter = "3.41.0"
+"ubi:OpenAPITools/openapi-generator" = "7.22.0"
