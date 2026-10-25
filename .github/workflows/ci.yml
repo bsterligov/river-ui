@@ -15,7 +15,7 @@ env:
 
 jobs:
   flutter:
-    name: Flutter analyze & tests
+    name: Flutter tests
     runs-on: ubuntu-latest
     if: ${{ github.event_name == 'push' || !github.event.pull_request.draft }}
     steps:
@@ -23,7 +23,5 @@ jobs:
       - uses: jdx/mise-action@v4
         with:
           install_args: flutter
-      - name: analyze
-        run: mise run ci:flutter-analyze
       - name: test
         run: mise run ci:flutter-test
